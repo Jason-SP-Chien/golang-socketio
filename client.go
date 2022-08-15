@@ -53,8 +53,10 @@ func Dial(url, nsp string, tr transport.Transport) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	nspMsg := fmt.Sprintf("4%d%s", protocol.MessageTypeOpen, nsp)
-	c.conn.WriteMessage(nspMsg)
+	if len(nsp) > 0 {
+		nspMsg := fmt.Sprintf("4%d%s", protocol.MessageTypeOpen, nsp)
+		c.conn.WriteMessage(nspMsg)
+	}
 
 	go inLoop(&c.Channel, &c.methods)
 	go outLoop(&c.Channel, &c.methods)
