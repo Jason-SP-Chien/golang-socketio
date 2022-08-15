@@ -95,7 +95,7 @@ type WebsocketTransport struct {
 
 func (wst *WebsocketTransport) Connect(url string) (conn Connection, err error) {
 	dialer := websocket.Dialer{}
-	socket, _, err := dialer.Dial(url, nil)
+	socket, _, err := dialer.Dial(url, wst.RequestHeader)
 	if err != nil {
 		return nil, err
 	}
