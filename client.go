@@ -2,6 +2,7 @@ package gosocketio
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 
 	"github.com/Jason-SP-Chien/golang-socketio/protocol"
@@ -43,24 +44,35 @@ ws://myserver.com/socket.io/?EIO=3&transport=websocket
 
 You can use GetUrlByHost for generating correct url
 */
-func Dial(url, nsp string, tr transport.Transport) (*Client, error) {
+func Dial(urlStr, nsp string, tr transport.Transport) (*Client, error) {
 	c := &Client{}
 	c.initChannel()
 	c.initMethods()
 
 	var err error
-	c.conn, err = tr.Connect(url)
+	c.conn, err = tr.Connect(urlStr)
 	if err != nil {
 		return nil, err
-	}
-	if len(nsp) > 0 {
-		nspMsg := fmt.Sprintf("4%d%s", protocol.MessageTypeOpen, nsp)
-		c.conn.WriteMessage(nspMsg)
 	}
 
 	go inLoop(&c.Channel, &c.methods)
 	go outLoop(&c.Channel, &c.methods)
 	go pinger(&c.Channel)
+
+	if len(nsp) > 0 {
+		nspMsg := fmt.Sprintf("4%d%s", protocol.MessageTypeOpen, nsp)
+		u, _ := url.Parse(urlStr)
+		if u != nil {
+			nspMsg += "?" + u.RawQuery
+		}
+
+		fmt.Println("nspMsg:", nspMsg)
+		err = c.conn.WriteMessage(nspMsg)
+		if err != nil {
+			return nil, err
+		}
+	}
+	c.Channel.Namespace = nsp
 
 	return c, nil
 }

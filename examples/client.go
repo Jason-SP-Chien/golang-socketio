@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/Jason-SP-Chien/golang-socketio"
-	"github.com/Jason-SP-Chien/golang-socketio/transport"
 	"log"
 	"runtime"
 	"time"
+
+	gosocketio "github.com/Jason-SP-Chien/golang-socketio"
+	"github.com/Jason-SP-Chien/golang-socketio/transport"
 )
 
 type Channel struct {
@@ -33,6 +34,7 @@ func main() {
 
 	c, err := gosocketio.Dial(
 		gosocketio.GetUrl("localhost", 3811, false),
+		"",
 		transport.GetDefaultWebsocketTransport())
 	if err != nil {
 		log.Fatal(err)

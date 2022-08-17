@@ -3,11 +3,12 @@ package gosocketio
 import (
 	"encoding/json"
 	"errors"
-	"github.com/Jason-SP-Chien/golang-socketio/protocol"
-	"github.com/Jason-SP-Chien/golang-socketio/transport"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/Jason-SP-Chien/golang-socketio/protocol"
+	"github.com/Jason-SP-Chien/golang-socketio/transport"
 )
 
 const (
@@ -51,6 +52,8 @@ type Channel struct {
 	server        *Server
 	ip            string
 	requestHeader http.Header
+
+	Namespace string
 }
 
 /**
